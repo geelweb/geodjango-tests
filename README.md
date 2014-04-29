@@ -24,7 +24,8 @@
     postgres=# CREATE EXTENSION fuzzystrmatch;
     postgres=# CREATE EXTENSION postgis_tiger_geocoder;
 
-    $ git clone http://github.con/geelweb/geodjangodemo.git geodjango
+    $ git clone https://github.com/geelweb/geodjango-tests.git geodjango
     $ cd geodjango
     $ python manage.py syncdb
     $ python manage.py runserver
+
