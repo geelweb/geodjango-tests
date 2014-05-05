@@ -18,9 +18,9 @@ def geocode_address(address):
     else:
         return latlon
 
-def get_shops(lon, lat):
+def get_shops(lon, lat, km):
     current_point = geos.fromstr("POINT(%s %s)" % (lon, lat))
-    distance_from_point = {"km": 10}
+    distance_from_point = {"km": km}
     shops = models.Shop.gis.filter(location__distance_lte=(current_point, measure.D(**distance_from_point)))
     shops = shops.distance(current_point).order_by("distance")
     return shops.distance(current_point)
@@ -29,15 +29,18 @@ def home(request):
     form = forms.AddressForm(request.POST or None)
     shops = []
     lat = lon = 0
+    address = ""
     if form.is_valid():
         address = form.cleaned_data['address']
+        km = form.cleaned_data['distance']
         location = geocode_address(address)
         if location:
             lat, lon = location
-            shops = get_shops(lon, lat)
+            shops = get_shops(lon, lat, km)
     return render_to_response("home.html", {
         "form": form,
         "shops": shops,
         "latitude": lat,
         "longitude": lon,
+        "address": address,
         }, context_instance=RequestContext(request))
